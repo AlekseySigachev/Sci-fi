@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Test.generated.h"
+#include "TestCPP.generated.h"
 
 UCLASS()
-class MAPSTEPTEST_API ATest : public AActor
+class MAPSTEPTEST_API ATestCPP : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATest();
+	ATestCPP();
 
 protected:
 	// Called when the game starts or when spawned
