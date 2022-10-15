@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 //#include "Components/StaticMeshComponent.h"
+#include "MapStepTest/Types.h"
+#include "MapStepTest/Const.h"
 #include "CPPSpaceObject.generated.h"
+
 
 UCLASS()
 class MAPSTEPTEST_API ACPPSpaceObject : public AActor
@@ -13,8 +16,10 @@ class MAPSTEPTEST_API ACPPSpaceObject : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+	virtual void Tick(float DeltaTime) override;
+
 	ACPPSpaceObject();
+	// ACPPSpaceObject(CPPStaticMesh CentralMesh, CPPMaterialInstance Material);
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,9 +45,24 @@ protected:
 	UFUNCTION()
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
+protected:
+	void AllocateArrow(UStaticMeshComponent *Arrow,
+								ConstructorHelpers::FObjectFinder<UStaticMesh>* a_ArrowMesh,
+								ConstructorHelpers::FObjectFinder<UMaterialInstance>* a_ArrowMaterial,
+								FVector Scale,
+								FVector Location,
+								FRotator Rotation );
+	
+private:
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+//variables
+public:
+protected:
+	CPPStaticMesh* CentralMesh_;
+	CPPMaterialInstance* Material_;
+	CPPStaticMesh* ArrowMesh_;
+	CPPMaterialInstance* ArrowMaterial_;
+	
+private:
 
 };
