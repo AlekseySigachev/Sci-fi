@@ -3,71 +3,61 @@
 
 #include "Map/CPPSpaceObject.h"
 
-// Sets default values
-// ACPPSpaceObject::ACPPSpaceObject()
-// {
-// 	CentralMesh_= CPPStaticMesh (TEXT("/Game/ProjcetS/StaticMesh/SM_Core"));
-// 	Material_ = CPPMaterialInstance (TEXT("/Game/ProjectS/Matrial/MI_Arrow"));
-// 	
-// }
-
-// ACPPSpaceObject::ACPPSpaceObject()
-// {
-// 	
-// };
-
-// ACPPSpaceObject::ACPPSpaceObject(ConstructorHelpers::FObjectFinder<UStaticMesh> CentralMesh,
-// 								CPPMaterialInstance Material ):
-// CentralMesh_(CentralMesh),
-// Material_(Material)
-
-ACPPSpaceObject::ACPPSpaceObject():
-CentralMesh_(new CPPStaticMesh (TEXT("/Game/ProjectS/StaticMesh/SM_Arrow"))),
-Material_(new CPPMaterialInstance (TEXT("/Game/ProjectS/Material/MI_Arrow"))),
-ArrowMesh_(new CPPStaticMesh (TEXT("/Game/ProjectS/StaticMesh/SM_Arrow"))),
-ArrowMaterial_(new CPPMaterialInstance (TEXT("/Game/ProjectS/Material/MI_Arrow")))
+ACPPSpaceObject::ACPPSpaceObject()
 
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
 	const FVector Scale = FVector(0.1f, 0.1f, 0.1f);
 	FVector Location;
-	FRotator Rotator;
-	
-	// ArrowMesh_ = CPPStaticMesh (TEXT("/Game/ProjectS/StaticMesh/SM_Arrow"));
-	// ArrowMaterial_ = CPPMaterialInstance (TEXT("/Game/ProjectS/Material/MI_Arrow"));
+	FRotator Rotation;
 
-	SceneComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
+	//Default mesh and material
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CoreMesh(TEXT("/Game/ProjectS/StaticMesh/SM_Core"));
+	UStaticMesh* SM_Core = CoreMesh.Object;
+	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowMesh(TEXT("/Game/ProjectS/StaticMesh/SM_Arrow"));
+	UStaticMesh* SM_Arrow = ArrowMesh.Object;
+	
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> ArrowMaterial(TEXT("/Game/ProjectS/Material/MI_Arrow"));
+	UMaterialInstance* MI_Arrow = ArrowMaterial.Object;
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultOpenMaterial(TEXT("/Game/ProjectS/Material/Red"));
+	OpenMaterial = DefaultOpenMaterial.Object;
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultCloseMaterial(TEXT("/Game/ProjectS/Material/Blue"));
+	CloseMaterial = DefaultCloseMaterial.Object;
+	
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 	SetRootComponent(SceneComponent);
 	SceneComponent->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
 
-	CentralObject = CreateDefaultSubobject<UStaticMeshComponent>("CentralObject");
+	CentralObject = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CentralObject"));
 	CentralObject->SetupAttachment(GetRootComponent());
-	CentralObject->SetStaticMesh(CentralMesh_->Object);
-	CentralObject->SetMaterial(0, Material_->Object);
+	CentralObject->SetStaticMesh(SM_Core);
+	CentralObject->SetMaterial(0, MI_Arrow);
 
-	ArrowTop = CreateDefaultSubobject<UStaticMeshComponent>("ArrowTop");
-	Rotator = FRotator(0.0f ,180.0f ,0.0f);
+	ArrowTop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArrowTop"));
+	Rotation = FRotator(0.0f ,180.0f ,0.0f);
 	Location = FVector(0.0f, 100.0f, 0.0f);
-	AllocateArrow(ArrowTop, ArrowMesh_, ArrowMaterial_, Scale, Location, Rotator);
+	AllocateArrow(ArrowTop, SM_Arrow, MI_Arrow, Scale, Location, Rotation);
 
-	ArrowRight = CreateDefaultSubobject<UStaticMeshComponent>("ArrowRight");
-	Rotator = FRotator(0.0f ,-90.0f ,0.0f);
+	ArrowRight = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArrowRight"));
+	Rotation = FRotator(0.0f ,-90.0f ,0.0f);
 	Location = FVector(-100.0f, 0.0f, 0.0f);
-	AllocateArrow(ArrowRight, ArrowMesh_, ArrowMaterial_, Scale, Location, Rotator);
+	AllocateArrow(ArrowRight, SM_Arrow, MI_Arrow, Scale, Location, Rotation);
 
-	ArrowDown = CreateDefaultSubobject<UStaticMeshComponent>("ArrowDown");
-	Rotator = FRotator(0.0f ,0.0f ,0.0f);
+	ArrowDown = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArrowDown"));
+	Rotation = FRotator(0.0f ,0.0f ,0.0f);
 	Location = FVector(0.0f, -100.0f, 0.0f);
-	AllocateArrow(ArrowDown, ArrowMesh_, ArrowMaterial_, Scale, Location, Rotator);
-
-	ArrowLeft = CreateDefaultSubobject<UStaticMeshComponent>("ArrowLeft");
-	Rotator = FRotator(0.0f ,90.0f ,0.0f);
+	AllocateArrow(ArrowDown, SM_Arrow, MI_Arrow, Scale, Location, Rotation);
+	
+	ArrowLeft = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArrowLeft"));
+	Rotation = FRotator(0.0f ,90.0f ,0.0f);
 	Location = FVector(100.0f, 0.0f, 0.0f);;
-	AllocateArrow(ArrowLeft, ArrowMesh_, ArrowMaterial_, Scale, Location, Rotator);
+	AllocateArrow(ArrowLeft, SM_Arrow, MI_Arrow, Scale, Location, Rotation);
 }
 
-// Called when the game starts or when spawned
 void ACPPSpaceObject::BeginPlay()
 {
 	Super::BeginPlay();
@@ -79,19 +69,23 @@ void ACPPSpaceObject::OnClicked(UPrimitiveComponent* TouchedComponent, FKey Butt
 	UE_LOG(LogTemp, Error, TEXT("Test with %s"),*TouchedComponent->GetName());
 }
 
-// Called every frame
 void ACPPSpaceObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ACPPSpaceObject::AllocateArrow(UStaticMeshComponent* Arrow, ConstructorHelpers::FObjectFinder<UStaticMesh>* a_ArrowMesh, CPPMaterialInstance* a_ArrowMaterial, FVector Scale, FVector Location, FRotator Rotation)
+
+void ACPPSpaceObject::AllocateArrow(UStaticMeshComponent* Arrow,
+									UStaticMesh* Mesh,
+									UMaterialInstance* Material,
+									FVector Scale,
+									FVector Location,
+									FRotator Rotation) const
 {
 		Arrow->SetupAttachment(GetRootComponent());
-		Arrow->SetStaticMesh(a_ArrowMesh->Object);
-		Arrow->SetMaterial(0, a_ArrowMaterial->Object);
+		Arrow->SetStaticMesh(Mesh);
+		Arrow->SetMaterial(0, Material);
 		Arrow->SetRelativeScale3D(Scale);
 		Arrow->SetRelativeLocation(Location);
 		Arrow->SetRelativeRotation(Rotation);
 }
-
