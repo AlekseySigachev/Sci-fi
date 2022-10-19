@@ -2,27 +2,19 @@
 
 
 #include "Map/CPPMapBuilder.h"
-
-#include <string>
-
-#include "Kismet/GameplayStatics.h"
 #include "Map/CPPSpaceObject_Star.h"
 #include "Map/CPPSpaceObject_Station.h"
 
 // Sets default values
 ACPPMapBuilder::ACPPMapBuilder()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	
+	PrimaryActorTick.bCanEverTick = false;
 }
 
-// Called when the game starts or when spawned
 void ACPPMapBuilder::BeginPlay()
 {
 	Super::BeginPlay();
 	AddStartStation(15, 0, 0, "StartStation");
-	
 }
 
 FString ACPPMapBuilder::GenNewKey(int32 PosX, int32 PosY)
@@ -41,7 +33,7 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int32> AllowDirectionList, F
 {
 	for (auto Direction : AllowDirectionList)
 	{
-		auto DeltaCoords = CalcNewDelata(Direction);
+		auto DeltaCoords = CalcNewDelta(Direction);
 		FString KeyToFind = GenNewKey(DeltaCoords.X, DeltaCoords.Y);
 		if(!MaseDict.FindKey(KeyToFind))
 		{
@@ -57,7 +49,7 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int32> AllowDirectionList, F
 	}
 }
 
-FVector2d ACPPMapBuilder::CalcNewDelata(int32 Direction)
+FVector2d ACPPMapBuilder::CalcNewDelta(int32 Direction)
 {
 	switch (Direction)
 	{
@@ -75,7 +67,6 @@ FVector2d ACPPMapBuilder::CalcNewDelata(int32 Direction)
 void ACPPMapBuilder::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ACPPMapBuilder::AddStartStation(int32 Direction, int32 PosX, int32 PosY, FString Name)
@@ -97,4 +88,3 @@ void ACPPMapBuilder::AddStartStation(int32 Direction, int32 PosX, int32 PosY, FS
 		CreateUndiscoveredStars(StartStation->GetAllowDirectionList(), StartStation->GetCoords());
 	}
 }
-

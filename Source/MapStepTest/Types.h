@@ -4,17 +4,27 @@
 #include "Engine/DataTable.h"
 #include "Types.generated.h"
 
+/*namespace CustomStruct
+{*/
+
 USTRUCT(BlueprintType)
 struct FStarsStruct : public FTableRowBase
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Star's ID")
+	int32 Id;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Number of Platest")
 	int32 NumsPlanet;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Star's material")
 	UMaterialInterface* Material;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bCanBeDiscovered;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Star's name")
+	FString Name;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Star's direction")
+	int32 Direction;
 };
+
+//}//end namespace CustomStruct
+
 
 
 typedef ConstructorHelpers::FObjectFinder<UStaticMesh> CPPStaticMesh;

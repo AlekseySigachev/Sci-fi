@@ -12,7 +12,6 @@ class ACPPOrbitalObject;
 class ACPPMainGameMode;
 
 
-
 UCLASS()
 class MAPSTEPTEST_API ACPPSpaceObject : public AActor
 {
@@ -64,13 +63,10 @@ protected:
 	ACPPMainGameMode* GameMode;
 
 private:
- int32 GridStep = 12;
+ int32 GridStep = 10;
 	UPROPERTY()
 	UDataTable* DataTable;
-	UPROPERTY()
-	UStruct* Struct;
 
-	
 	//Methods
 public:
 	ACPPSpaceObject();

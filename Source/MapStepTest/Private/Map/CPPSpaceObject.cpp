@@ -14,12 +14,6 @@ ACPPSpaceObject::ACPPSpaceObject()
 	FVector Location;
 	FRotator Rotation;
 
-	//Data table & Struct
-	/*static ConstructorHelpers::FObjectFinder<UDataTable> TableToFind(TEXT("/Game/ProjectS/Data/DT_Stars"));
-	static ConstructorHelpers::FObjectFinder<UStruct> StructToFind(TEXT("/Game/ProjectS/Data/S_Stars"));
-	DataTable = TableToFind.Object;
-	Struct = StructToFind.Object;*/
-	
 	//Default mesh and material
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CoreMesh(TEXT("/Game/ProjectS/StaticMesh/SM_Core"));
 	UStaticMesh* SM_Core = CoreMesh.Object;
@@ -70,7 +64,6 @@ void ACPPSpaceObject::BeginPlay()
 {
 	Super::BeginPlay();
 	CentralObject->OnClicked.AddDynamic(this, &ACPPSpaceObject::OnClicked);
-	/*UE_LOG(LogTemp,Error,TEXT("Table is: %s ||| Struct is: %s"),*DataTable->GetName(), *Struct->GetName());*/
 }
 
 void ACPPSpaceObject::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
@@ -167,16 +160,30 @@ void ACPPSpaceObject::DisableArrowAndDirection(int32 direction)
 {
 	switch (direction)
 	{
-	case 1: DisableArrowTop(), DisableDirection(direction);
-	
-	case 2: DisableArrowRight(), DisableDirection(direction);
-	
-	case 4: DisableArrowDown(), DisableDirection(direction);
-	
-	case 8: DisableArrowLeft(), DisableDirection(direction);
-	
-	default: ;
-	
+	case 1:
+		{
+			DisableArrowTop();
+			DisableDirection(direction);
+			break;
+		}
+	case 2:
+		{
+			DisableArrowRight();
+			DisableDirection(direction);
+			break;
+		}
+	case 4:
+		{
+			DisableArrowDown();
+			DisableDirection(direction);
+			break;
+		}
+	case 8:
+		{
+			DisableArrowLeft();
+			DisableDirection(direction);
+			break;
+		}
 	}
 }
 
@@ -184,16 +191,30 @@ void ACPPSpaceObject::EnableArrowAndDirection(int32 direction)
 {
 	switch (direction)
 	{
-	case 1: EnableArrowTop(), EnableDirection(direction);
-	
-	case 2: EnableArrowRight(), EnableDirection(direction);
-	
-	case 4: EnableArrowDown(), EnableDirection(direction);
-	
-	case 8: EnableArrowLeft(), EnableDirection(direction);
-	
-	default: ;
-	
+	case 1:
+		{
+			EnableArrowTop();
+			EnableDirection(direction);
+			break;
+		}
+	case 2:
+		{
+			EnableArrowRight();
+			EnableDirection(direction);
+			break;
+		}
+	case 4:
+		{
+			EnableArrowDown();
+			EnableDirection(direction);
+			break;
+		}
+	case 8:
+		{
+			EnableArrowLeft();
+			EnableDirection(direction);
+			break;
+		}
 	}
 }
 
@@ -251,12 +272,8 @@ void ACPPSpaceObject::DrawArrows()
 
 void ACPPSpaceObject::Draw()
 {
-	auto LocationX = (PosX*GridStep) - (GridStep / 2);
-	auto LocationY = (PosY*GridStep) - (GridStep / 2);
+	auto LocationX = (PosX*GridStep);
+	auto LocationY = (PosY*GridStep);
 	const FVector NewLocation = FVector(LocationX, LocationY, 0.0f);
 	SetActorLocation(NewLocation);
 }
-
-
-
-
