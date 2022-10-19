@@ -3,6 +3,8 @@
 
 #include "Map/CPPSpaceObject.h"
 
+#include "Engine/DataTable.h"
+
 ACPPSpaceObject::ACPPSpaceObject()
 
 {
@@ -12,6 +14,12 @@ ACPPSpaceObject::ACPPSpaceObject()
 	FVector Location;
 	FRotator Rotation;
 
+	//Data table & Struct
+	/*static ConstructorHelpers::FObjectFinder<UDataTable> TableToFind(TEXT("/Game/ProjectS/Data/DT_Stars"));
+	static ConstructorHelpers::FObjectFinder<UStruct> StructToFind(TEXT("/Game/ProjectS/Data/S_Stars"));
+	DataTable = TableToFind.Object;
+	Struct = StructToFind.Object;*/
+	
 	//Default mesh and material
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CoreMesh(TEXT("/Game/ProjectS/StaticMesh/SM_Core"));
 	UStaticMesh* SM_Core = CoreMesh.Object;
@@ -62,6 +70,7 @@ void ACPPSpaceObject::BeginPlay()
 {
 	Super::BeginPlay();
 	CentralObject->OnClicked.AddDynamic(this, &ACPPSpaceObject::OnClicked);
+	/*UE_LOG(LogTemp,Error,TEXT("Table is: %s ||| Struct is: %s"),*DataTable->GetName(), *Struct->GetName());*/
 }
 
 void ACPPSpaceObject::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
@@ -74,13 +83,26 @@ void ACPPSpaceObject::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ACPPSpaceObject::OnDiscovered()
+{
+	DrawArrows();
+	CentralObject->SetMaterial(0, OpenMaterial);
+}
+
+void ACPPSpaceObject::SetProperties(FString name, int32 direction, int32 planetquantity, UMaterialInterface* material)
+{
+	Name = name;
+	Direction = direction;
+	OpenMaterial = material;
+}
+
 
 void ACPPSpaceObject::AllocateArrow(UStaticMeshComponent* Arrow,
-									UStaticMesh* Mesh,
-									UMaterialInstance* Material,
-									FVector Scale,
-									FVector Location,
-									FRotator Rotation) const
+                                    UStaticMesh* Mesh,
+                                    UMaterialInstance* Material,
+                                    FVector Scale,
+                                    FVector Location,
+                                    FRotator Rotation) const
 {
 		Arrow->SetupAttachment(GetRootComponent());
 		Arrow->SetStaticMesh(Mesh);
@@ -88,4 +110,153 @@ void ACPPSpaceObject::AllocateArrow(UStaticMeshComponent* Arrow,
 		Arrow->SetRelativeScale3D(Scale);
 		Arrow->SetRelativeLocation(Location);
 		Arrow->SetRelativeRotation(Rotation);
+		Arrow->SetVisibility(false);
 }
+
+FVector2d ACPPSpaceObject::GetCoords() const
+{
+	return FVector2d(PosX, PosY);
+}
+
+int32 ACPPSpaceObject::GetGridStep() const
+{
+	return GridStep;
+}
+
+void ACPPSpaceObject::EnableArrowTop()
+{
+	ArrowTop->SetVisibility(true);
+}
+
+void ACPPSpaceObject::EnableArrowRight()
+{
+	ArrowRight->SetVisibility(true);
+}
+
+void ACPPSpaceObject::EnableArrowDown()
+{
+	ArrowDown->SetVisibility(true);
+}
+
+void ACPPSpaceObject::EnableArrowLeft()
+{
+	ArrowLeft->SetVisibility(true);
+}
+
+void ACPPSpaceObject::DisableArrowTop()
+{
+	ArrowTop->SetVisibility(false);
+}
+
+void ACPPSpaceObject::DisableArrowRight()
+{
+	ArrowRight->SetVisibility(false);
+}
+
+void ACPPSpaceObject::DisableArrowDown()
+{
+	ArrowDown->SetVisibility(false);
+}
+
+void ACPPSpaceObject::DisableArrowLeft()
+{
+	ArrowLeft->SetVisibility(false);
+}
+
+void ACPPSpaceObject::DisableArrowAndDirection(int32 direction)
+{
+	switch (direction)
+	{
+	case 1: DisableArrowTop(), DisableDirection(direction);
+	
+	case 2: DisableArrowRight(), DisableDirection(direction);
+	
+	case 4: DisableArrowDown(), DisableDirection(direction);
+	
+	case 8: DisableArrowLeft(), DisableDirection(direction);
+	
+	default: ;
+	
+	}
+}
+
+void ACPPSpaceObject::EnableArrowAndDirection(int32 direction)
+{
+	switch (direction)
+	{
+	case 1: EnableArrowTop(), EnableDirection(direction);
+	
+	case 2: EnableArrowRight(), EnableDirection(direction);
+	
+	case 4: EnableArrowDown(), EnableDirection(direction);
+	
+	case 8: EnableArrowLeft(), EnableDirection(direction);
+	
+	default: ;
+	
+	}
+}
+
+bool ACPPSpaceObject::CanMoveTop()
+{
+	return CalcDirection(1)== 1;
+}
+
+bool ACPPSpaceObject::CanMoveDown()
+{
+	return CalcDirection(4)== 4;
+}
+
+bool ACPPSpaceObject::CanMoveRight()
+{
+	return CalcDirection(2)== 2;
+}
+
+bool ACPPSpaceObject::CanMoveLeft()
+{
+	return CalcDirection(8)== 8;
+}
+
+int32 ACPPSpaceObject::CalcDirection(int32 CalcDirection)
+{
+	return  CalcDirection & Direction;
+}
+
+void ACPPSpaceObject::EnableDirection(int32 direction)
+{
+	Direction = direction | Direction;
+}
+void ACPPSpaceObject::DisableDirection(int32 direction)
+{
+	Direction = ~direction & Direction;
+}
+
+TArray<int32> ACPPSpaceObject::GetAllowDirectionList()
+{
+	TArray<int32> DirectionList;
+	CanMoveTop() ? DirectionList.Add(1) : NULL;
+	CanMoveRight() ? DirectionList.Add(2) : NULL;
+	CanMoveDown() ? DirectionList.Add(4) : NULL;
+	CanMoveLeft() ? DirectionList.Add(8) : NULL;
+	return DirectionList;
+}
+
+void ACPPSpaceObject::DrawArrows()
+{
+	CanMoveTop() ? EnableArrowTop() : NULL;
+	CanMoveRight() ? EnableArrowRight() : NULL;
+	CanMoveDown() ? EnableArrowDown() : NULL;
+	CanMoveLeft() ? EnableArrowLeft() : NULL;
+}
+
+void ACPPSpaceObject::Draw()
+{
+	auto LocationX = (PosX*GridStep) - (GridStep / 2);
+	auto LocationY = (PosY*GridStep) - (GridStep / 2);
+	const FVector NewLocation = FVector(LocationX, LocationY, 0.0f);
+	SetActorLocation(NewLocation);
+}
+
+
+
+
