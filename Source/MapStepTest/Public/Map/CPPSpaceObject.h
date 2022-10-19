@@ -11,6 +11,16 @@ class ACPPMapBuilder;
 class ACPPOrbitalObject;
 class ACPPMainGameMode;
 
+/*
+ *g
+ *m
+ *a
+ *v
+ *
+ *
+ *
+ *
+ **/
 
 UCLASS()
 class MAPSTEPTEST_API ACPPSpaceObject : public AActor
@@ -28,25 +38,25 @@ public:
 	int32 Direction;
 	
 	UPROPERTY()
-	FString Name;
+	FName Name;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USceneComponent* SceneComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* CentralObject;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ArrowTop;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ArrowRight;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ArrowDown;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ArrowLeft;
 
 	float OrbitalSpeed;
@@ -71,10 +81,13 @@ private:
 public:
 	ACPPSpaceObject();
 	virtual void Tick(float DeltaTime) override;
-	void OnDiscovered();
-	void SetProperties(FString name, int32 direction, int32 planetquantity, UMaterialInterface* material);
+	void OnDiscovered() const;
+	
+	// fixme Rename variables with "Arg"
+	void SetProperties(FName name, int32 direction, int32 planetquantity, UMaterialInterface* material);
+	// fixme Rename variables with "Arg"
 	FVector2d GetCoords() const;
-	TArray<int32> GetAllowDirectionList();
+	TArray<int8> GetAllowDirectionList() const;
 	void Draw();
 
 protected:
@@ -86,24 +99,24 @@ protected:
 	void AllocateArrow(UStaticMeshComponent *Arrow, UStaticMesh* a_ArrowMesh, //
 		UMaterialInstance* a_ArrowMaterial, FVector Scale, FVector Location, FRotator Rotation ) const;
 	int32 GetGridStep() const;
-	void EnableArrowTop();
-	void EnableArrowRight();
-	void EnableArrowDown();
-	void EnableArrowLeft();
-	void DisableArrowTop();
-	void DisableArrowRight();
-	void DisableArrowDown();
-	void DisableArrowLeft();
-	void DisableArrowAndDirection(int32 direction);
-	void EnableArrowAndDirection(int32 direction);
-	bool CanMoveTop();
-	bool CanMoveDown();
-	bool CanMoveRight();
-	bool CanMoveLeft();
-	int32 CalcDirection(int32 CalcDirection);
-	void EnableDirection(int32 direction);
-	void DisableDirection(int32 direction);
-	void DrawArrows();
+	void EnableArrowTop() const;
+	void EnableArrowRight() const;
+	void EnableArrowDown() const;
+	void EnableArrowLeft() const;
+	void DisableArrowTop() const;
+	void DisableArrowRight() const;
+	void DisableArrowDown() const;
+	void DisableArrowLeft() const;
+	void DisableArrowAndDirection(int8 direction);
+	void EnableArrowAndDirection(int8 direction);
+	bool CanMoveTop() const;
+	bool CanMoveDown() const;
+	bool CanMoveRight() const;
+	bool CanMoveLeft() const;
+	int8 CalcDirection(int8 CalcDirection) const;
+	void EnableDirection(int8 direction);
+	void DisableDirection(int8 direction);
+	void DrawArrows() const;
 
 private:
 

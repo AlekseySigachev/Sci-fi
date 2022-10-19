@@ -4,6 +4,7 @@
 #include "Map/CPPSpaceObject.h"
 
 #include "Engine/DataTable.h"
+#include "MapStepTest/Types.h"
 
 ACPPSpaceObject::ACPPSpaceObject()
 
@@ -27,6 +28,11 @@ ACPPSpaceObject::ACPPSpaceObject()
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultOpenMaterial(TEXT("/Game/ProjectS/Material/Red"));
 	OpenMaterial = DefaultOpenMaterial.Object;
 
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Game/ProjectS/Data/DT_Star"));
+	DataTable = DataTableFinder.Object;
+	// GetDataTableRow
+	// FStarsStruct* Item = DataTable->FindRow<FStarsStruct>(Name, "");	
+	// GetDataTableRow
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultCloseMaterial(TEXT("/Game/ProjectS/Material/Blue"));
 	CloseMaterial = DefaultCloseMaterial.Object;
 	
@@ -76,13 +82,13 @@ void ACPPSpaceObject::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ACPPSpaceObject::OnDiscovered()
+void ACPPSpaceObject::OnDiscovered() const
 {
 	DrawArrows();
 	CentralObject->SetMaterial(0, OpenMaterial);
 }
 
-void ACPPSpaceObject::SetProperties(FString name, int32 direction, int32 planetquantity, UMaterialInterface* material)
+void ACPPSpaceObject::SetProperties(FName name, int32 direction, int32 planetquantity, UMaterialInterface* material)
 {
 	Name = name;
 	Direction = direction;
@@ -116,47 +122,47 @@ int32 ACPPSpaceObject::GetGridStep() const
 	return GridStep;
 }
 
-void ACPPSpaceObject::EnableArrowTop()
+void ACPPSpaceObject::EnableArrowTop() const
 {
 	ArrowTop->SetVisibility(true);
 }
 
-void ACPPSpaceObject::EnableArrowRight()
+void ACPPSpaceObject::EnableArrowRight() const
 {
 	ArrowRight->SetVisibility(true);
 }
 
-void ACPPSpaceObject::EnableArrowDown()
+void ACPPSpaceObject::EnableArrowDown() const
 {
 	ArrowDown->SetVisibility(true);
 }
 
-void ACPPSpaceObject::EnableArrowLeft()
+void ACPPSpaceObject::EnableArrowLeft() const
 {
 	ArrowLeft->SetVisibility(true);
 }
 
-void ACPPSpaceObject::DisableArrowTop()
+void ACPPSpaceObject::DisableArrowTop() const
 {
 	ArrowTop->SetVisibility(false);
 }
 
-void ACPPSpaceObject::DisableArrowRight()
+void ACPPSpaceObject::DisableArrowRight() const
 {
 	ArrowRight->SetVisibility(false);
 }
 
-void ACPPSpaceObject::DisableArrowDown()
+void ACPPSpaceObject::DisableArrowDown() const
 {
 	ArrowDown->SetVisibility(false);
 }
 
-void ACPPSpaceObject::DisableArrowLeft()
+void ACPPSpaceObject::DisableArrowLeft() const
 {
 	ArrowLeft->SetVisibility(false);
 }
 
-void ACPPSpaceObject::DisableArrowAndDirection(int32 direction)
+void ACPPSpaceObject::DisableArrowAndDirection(int8 direction)
 {
 	switch (direction)
 	{
@@ -187,7 +193,7 @@ void ACPPSpaceObject::DisableArrowAndDirection(int32 direction)
 	}
 }
 
-void ACPPSpaceObject::EnableArrowAndDirection(int32 direction)
+void ACPPSpaceObject::EnableArrowAndDirection(int8 direction)
 {
 	switch (direction)
 	{
@@ -218,56 +224,80 @@ void ACPPSpaceObject::EnableArrowAndDirection(int32 direction)
 	}
 }
 
-bool ACPPSpaceObject::CanMoveTop()
+bool ACPPSpaceObject::CanMoveTop() const
 {
 	return CalcDirection(1)== 1;
 }
 
-bool ACPPSpaceObject::CanMoveDown()
+bool ACPPSpaceObject::CanMoveDown() const
 {
 	return CalcDirection(4)== 4;
 }
 
-bool ACPPSpaceObject::CanMoveRight()
+bool ACPPSpaceObject::CanMoveRight() const
 {
 	return CalcDirection(2)== 2;
 }
 
-bool ACPPSpaceObject::CanMoveLeft()
+bool ACPPSpaceObject::CanMoveLeft() const
 {
 	return CalcDirection(8)== 8;
 }
 
-int32 ACPPSpaceObject::CalcDirection(int32 CalcDirection)
+int8 ACPPSpaceObject::CalcDirection(int8 CalcDirection) const
 {
 	return  CalcDirection & Direction;
 }
 
-void ACPPSpaceObject::EnableDirection(int32 direction)
+void ACPPSpaceObject::EnableDirection(int8 direction)
 {
 	Direction = direction | Direction;
 }
-void ACPPSpaceObject::DisableDirection(int32 direction)
+void ACPPSpaceObject::DisableDirection(int8 direction)
 {
 	Direction = ~direction & Direction;
 }
 
-TArray<int32> ACPPSpaceObject::GetAllowDirectionList()
+TArray<int8> ACPPSpaceObject::GetAllowDirectionList() const
 {
-	TArray<int32> DirectionList;
-	CanMoveTop() ? DirectionList.Add(1) : NULL;
-	CanMoveRight() ? DirectionList.Add(2) : NULL;
-	CanMoveDown() ? DirectionList.Add(4) : NULL;
-	CanMoveLeft() ? DirectionList.Add(8) : NULL;
+	TArray<int8> DirectionList;
+	if(CanMoveTop())
+	{
+		DirectionList.Add(1);
+	}
+	if(CanMoveRight())
+	{
+		DirectionList.Add(2);
+	}
+	if(CanMoveDown())
+	{
+		DirectionList.Add(4);
+	}
+	if(CanMoveLeft())
+	{
+		DirectionList.Add(8);
+	}
 	return DirectionList;
 }
 
-void ACPPSpaceObject::DrawArrows()
+void ACPPSpaceObject::DrawArrows() const
 {
-	CanMoveTop() ? EnableArrowTop() : NULL;
-	CanMoveRight() ? EnableArrowRight() : NULL;
-	CanMoveDown() ? EnableArrowDown() : NULL;
-	CanMoveLeft() ? EnableArrowLeft() : NULL;
+	if(CanMoveTop())
+	{
+		EnableArrowTop();
+	}
+	if(CanMoveRight())
+	{
+		EnableArrowRight();
+	}
+	if(CanMoveDown())
+	{
+		EnableArrowDown();
+	}
+	if(CanMoveLeft())
+	{
+		EnableArrowLeft();
+	}
 }
 
 void ACPPSpaceObject::Draw()

@@ -15,24 +15,26 @@ class MAPSTEPTEST_API ACPPMapBuilder : public AActor
 public:
 protected:
 private:
+
+	//fixme Change FString to Vector2d
 	TMap<ACPPSpaceObject*, FString> MaseDict;
-	TArray<ACPPSpaceObject*> DiscoveryHistory;
 	
+	TArray<ACPPSpaceObject*> DiscoveryHistory;
 	//Methods
 public:	
 	ACPPMapBuilder();
 
 	virtual void Tick(float DeltaTime) override;
-	void AddStartStation(int32 Direction, int32 PosX, int32 PosY, FString Name);
+	void AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName Name);
 
 protected:
 	virtual void BeginPlay() override;
 
-	FString GenNewKey(int32 PosX, int32 PosY);
+	FString GenNewKey(int8 PosX, int8 PosY);
 	void AddKeyAndHistory(ACPPSpaceObject* Object, FString Key);
 
-	void CreateUndiscoveredStars(TArray<int32> AllowDirectionList, FVector2d Coords);
-	FVector2d CalcNewDelta(int32 Direction);
+	void CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords);
+	FVector2d CalcNewDelta(int8 Direction);
 
 private:
 

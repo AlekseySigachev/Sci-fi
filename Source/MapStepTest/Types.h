@@ -18,7 +18,7 @@ struct FStarsStruct : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Star's material")
 	UMaterialInterface* Material;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Star's name")
-	FString Name;
+	FName Name;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Star's direction")
 	int32 Direction;
 };

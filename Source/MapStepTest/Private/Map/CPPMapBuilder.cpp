@@ -17,7 +17,7 @@ void ACPPMapBuilder::BeginPlay()
 	AddStartStation(15, 0, 0, "StartStation");
 }
 
-FString ACPPMapBuilder::GenNewKey(int32 PosX, int32 PosY)
+FString ACPPMapBuilder::GenNewKey(int8 PosX, int8 PosY)
 {
 	FString Key = FString::Printf(TEXT("%d_%d"), PosX, PosY);
 	return Key;
@@ -29,11 +29,11 @@ void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FString Key)
 	DiscoveryHistory.Add(Object);
 }
 
-void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int32> AllowDirectionList, FVector2d Coords)
+void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords)
 {
-	for (auto Direction : AllowDirectionList)
+	for (const auto Direction : AllowDirectionList)
 	{
-		auto DeltaCoords = CalcNewDelta(Direction);
+		const auto DeltaCoords = CalcNewDelta(Direction);
 		FString KeyToFind = GenNewKey(DeltaCoords.X, DeltaCoords.Y);
 		if(!MaseDict.FindKey(KeyToFind))
 		{
@@ -45,11 +45,11 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int32> AllowDirectionList, F
 			Star->FinishSpawning(SpawnTransform);
 			Star->Draw();
 			MaseDict.Add(Star, KeyToFind);
-		} 
+		}
 	}
 }
 
-FVector2d ACPPMapBuilder::CalcNewDelta(int32 Direction)
+FVector2d ACPPMapBuilder::CalcNewDelta(int8 Direction)
 {
 	switch (Direction)
 	{
@@ -58,7 +58,7 @@ FVector2d ACPPMapBuilder::CalcNewDelta(int32 Direction)
 	case 4: return FVector2d(0.0f, -1.0f);
 	case 8: return FVector2d(1.0f, 0.0f);
 	
-	default: return FVector2d(0.0f, 0.0f);;
+	default: return FVector2d::ZeroVector;
 	
 	}
 }
@@ -69,11 +69,12 @@ void ACPPMapBuilder::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ACPPMapBuilder::AddStartStation(int32 Direction, int32 PosX, int32 PosY, FString Name)
+void ACPPMapBuilder::AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName Name)
 {
 	const FTransform SpawnTransform(FRotator::ZeroRotator, FVector::ZeroVector);
 	ACPPSpaceObject_Station* StartStation = GetWorld()->SpawnActorDeferred<ACPPSpaceObject_Station>
 											(ACPPSpaceObject_Station::StaticClass(), SpawnTransform);
+	
 	if (StartStation)
 	{
 		StartStation->PosX = PosX;
