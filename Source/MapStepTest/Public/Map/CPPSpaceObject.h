@@ -11,16 +11,6 @@ class ACPPMapBuilder;
 class ACPPOrbitalObject;
 class ACPPMainGameMode;
 
-/*
- *g
- *m
- *a
- *v
- *
- *
- *
- *
- **/
 
 UCLASS()
 class MAPSTEPTEST_API ACPPSpaceObject : public AActor
@@ -80,12 +70,10 @@ private:
 	//Methods
 public:
 	ACPPSpaceObject();
+	
 	virtual void Tick(float DeltaTime) override;
 	void OnDiscovered() const;
-	
-	// fixme Rename variables with "Arg"
-	void SetProperties(FName name, int32 direction, int32 planetquantity, UMaterialInterface* material);
-	// fixme Rename variables with "Arg"
+	void SetProperties(FName ArgName, int32 ArgDirection, int32 PlanetQuantity, UMaterialInterface* Material);
 	FVector2d GetCoords() const;
 	TArray<int8> GetAllowDirectionList() const;
 	void Draw();

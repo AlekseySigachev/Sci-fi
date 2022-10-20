@@ -16,8 +16,7 @@ public:
 protected:
 private:
 
-	//fixme Change FString to Vector2d
-	TMap<ACPPSpaceObject*, FString> MaseDict;
+	TMap<ACPPSpaceObject*, FVector2d> MaseDict;
 	
 	TArray<ACPPSpaceObject*> DiscoveryHistory;
 	//Methods
@@ -30,8 +29,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	FString GenNewKey(int8 PosX, int8 PosY);
-	void AddKeyAndHistory(ACPPSpaceObject* Object, FString Key);
+	void AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key);
 
 	void CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords);
 	FVector2d CalcNewDelta(int8 Direction);

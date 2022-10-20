@@ -5,6 +5,7 @@
 #include "Map/CPPSpaceObject_Star.h"
 #include "Map/CPPSpaceObject_Station.h"
 
+DEFINE_LOG_CATEGORY_STATIC(MapBuilderLog, All, All);
 // Sets default values
 ACPPMapBuilder::ACPPMapBuilder()
 {
@@ -17,16 +18,12 @@ void ACPPMapBuilder::BeginPlay()
 	AddStartStation(15, 0, 0, "StartStation");
 }
 
-FString ACPPMapBuilder::GenNewKey(int8 PosX, int8 PosY)
-{
-	FString Key = FString::Printf(TEXT("%d_%d"), PosX, PosY);
-	return Key;
-}
-
-void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FString Key)
+void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key)
 {
 	MaseDict.Add(Object, Key);
 	DiscoveryHistory.Add(Object);
+	UE_LOG(MapBuilderLog, Display, TEXT("Key: %f:%f added to map"), Key.X, Key.Y);
+	UE_LOG(MapBuilderLog, Display, TEXT("Object: %s added to histtory"), *Object->GetName());
 }
 
 void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords)
@@ -34,16 +31,19 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FV
 	for (const auto Direction : AllowDirectionList)
 	{
 		const auto DeltaCoords = CalcNewDelta(Direction);
-		FString KeyToFind = GenNewKey(DeltaCoords.X, DeltaCoords.Y);
+		FVector2d KeyToFind = FVector2d(DeltaCoords.X, DeltaCoords.Y);
 		if(!MaseDict.FindKey(KeyToFind))
 		{
 			const FTransform SpawnTransform(FRotator::ZeroRotator, FVector::ZeroVector);
 			ACPPSpaceObject_Star* Star = GetWorld()->SpawnActorDeferred<ACPPSpaceObject_Star>
 													(ACPPSpaceObject_Star::StaticClass(), SpawnTransform);
+			if(!Star) return;
+			UE_LOG(MapBuilderLog, Display, TEXT("Undiscovered Star: %s created"), *Star->GetName());
 			Star->PosX = DeltaCoords.X;
 			Star->PosY = DeltaCoords.Y;
 			Star->FinishSpawning(SpawnTransform);
 			Star->Draw();
+			UE_LOG(MapBuilderLog, Display, TEXT("Undiscovered Star: %s initialized"), *Star->GetName());
 			MaseDict.Add(Star, KeyToFind);
 		}
 	}
@@ -84,7 +84,8 @@ void ACPPMapBuilder::AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName
 		StartStation->FinishSpawning(SpawnTransform);
 		StartStation->OnDiscovered();
 		StartStation->Draw();
-		const FString Key = GenNewKey(PosX,PosY);
+		UE_LOG(MapBuilderLog, Display, TEXT("StartStation: %s initialized"), *StartStation->GetName());
+		const FVector2d Key = FVector2d(PosX, PosY);
 		AddKeyAndHistory(StartStation, Key);
 		CreateUndiscoveredStars(StartStation->GetAllowDirectionList(), StartStation->GetCoords());
 	}
