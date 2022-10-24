@@ -51,6 +51,7 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FV
 			UE_LOG(MapBuilderLog, Display, TEXT("Undiscovered Star: %s initialized"), *Star->GetName());
 			MaseDict.Add(KeyToFind, Star);
 		}
+		Finished();
 	}
 }
 
@@ -108,6 +109,17 @@ FVector2d ACPPMapBuilder::CalcNewDelta(int8 Direction)
 bool ACPPMapBuilder::IsEmpty(TArray<FName> Array)
 {
 	return Array.IsEmpty();
+}
+
+void ACPPMapBuilder::Finished()
+{
+	TArray<FVector2d> test;
+	for (auto Test : MaseDict)
+	{
+		auto Key = Test.Key;
+		auto Value = Test.Value;
+		UE_LOG(MapBuilderLog, Error, TEXT("%s key is: %s"), *Value->GetName(), *Key.ToString());
+	}
 }
 
 // Called every frame

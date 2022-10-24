@@ -43,5 +43,6 @@ private:
 	UPROPERTY()
 	UDataTable* DataTable;
 	TArray<FName> StarsName;
+	void Finished();
 
 };
