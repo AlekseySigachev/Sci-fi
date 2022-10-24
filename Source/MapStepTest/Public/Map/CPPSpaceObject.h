@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
+#include "MapStepTest/CustomStructs.h"
 #include "CPPSpaceObject.generated.h"
 
 class ACPPMapBuilder;
@@ -28,7 +29,7 @@ public:
 	int32 Direction;
 	
 	UPROPERTY()
-	FName Name;
+	mutable FName Name;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -73,7 +74,9 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 	void OnDiscovered() const;
-	void SetProperties(FName ArgName, int32 ArgDirection, int32 PlanetQuantity, UMaterialInterface* Material);
+	void SetProperties(FStarsStruct* Struct);
+	void DisableArrowAndDirection(int8 direction);
+	void EnableArrowAndDirection(int8 direction);
 	FVector2d GetCoords() const;
 	TArray<int8> GetAllowDirectionList() const;
 	void Draw();
@@ -95,8 +98,6 @@ protected:
 	void DisableArrowRight() const;
 	void DisableArrowDown() const;
 	void DisableArrowLeft() const;
-	void DisableArrowAndDirection(int8 direction);
-	void EnableArrowAndDirection(int8 direction);
 	bool CanMoveTop() const;
 	bool CanMoveDown() const;
 	bool CanMoveRight() const;

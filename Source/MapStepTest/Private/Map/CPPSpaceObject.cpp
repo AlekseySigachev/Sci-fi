@@ -4,7 +4,6 @@
 #include "Map/CPPSpaceObject.h"
 
 #include "Engine/DataTable.h"
-#include "MapStepTest/Types.h"
 DEFINE_LOG_CATEGORY_STATIC(SpaceObjectLog, All, All);
 
 ACPPSpaceObject::ACPPSpaceObject()
@@ -89,12 +88,13 @@ void ACPPSpaceObject::OnDiscovered() const
 	CentralObject->SetMaterial(0, OpenMaterial);
 }
 
-void ACPPSpaceObject::SetProperties(FName ArgName, int32 ArgDirection, int32 PlanetQuantity, UMaterialInterface* Material)
+void ACPPSpaceObject::SetProperties(FStarsStruct* Struct)
 {
-	Name = ArgName;
-	Direction = ArgDirection;
-	OpenMaterial = Material;
+	Name = Struct->Name;
+	Direction = Struct->Direction;
+	OpenMaterial = Struct->Material;
 }
+
 
 
 void ACPPSpaceObject::AllocateArrow(UStaticMeshComponent* Arrow,
