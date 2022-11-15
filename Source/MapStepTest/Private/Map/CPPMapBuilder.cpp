@@ -55,6 +55,7 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FV
 	}
 }
 
+
 void ACPPMapBuilder::DeleteUndiscoveredStars(TArray<ACPPSpaceObject*> Stars)
 {
 	for (auto Star : Stars)

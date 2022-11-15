@@ -12,6 +12,7 @@ UCLASS()
 class MAPSTEPTEST_API ACPPMapBuilder : public AActor
 {
 	GENERATED_BODY()
+	
 	// Variables
 public:
 	
