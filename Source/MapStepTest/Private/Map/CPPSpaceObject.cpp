@@ -2,8 +2,11 @@
 
 
 #include "Map/CPPSpaceObject.h"
+#include "Math/UnrealMathUtility.h"
 
 #include "Engine/DataTable.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Map/CPPOrbitalObject.h"
 DEFINE_LOG_CATEGORY_STATIC(SpaceObjectLog, All, All);
 
 ACPPSpaceObject::ACPPSpaceObject()
@@ -80,6 +83,9 @@ void ACPPSpaceObject::OnClicked(UPrimitiveComponent* TouchedComponent, FKey Butt
 void ACPPSpaceObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	Time += DeltaTime;
+	CalcObjectsPositionsOnOrbit();
+	ReallocateObjectsOnOrbit();
 }
 
 void ACPPSpaceObject::OnDiscovered() const
@@ -307,4 +313,40 @@ void ACPPSpaceObject::Draw()
 	auto LocationY = (PosY*GridStep);
 	const FVector NewLocation = FVector(LocationX, LocationY, 0.0f);
 	SetActorLocation(NewLocation);
+}
+
+void ACPPSpaceObject::CalcObjectsPositionsOnOrbit()
+{
+	Positions.Empty();
+	auto ContainerPosition = GetActorLocation();
+	auto Step = PI * 2 / OrbitalObjects.Num();
+	for (int i = 1; i < (OrbitalObjects.Num() + 1); i++)
+	{
+		auto Angle = i * Step;
+		auto Cos = UKismetMathLibrary::Cos(Angle + (OrbitalSpeed * Time));
+		auto Sin = UKismetMathLibrary::Sin(Angle + (OrbitalSpeed * Time));
+		auto XPos = Cos * OrbitalRadius;
+		auto YPos = Sin * OrbitalRadius;
+		FVector Position = FVector((ContainerPosition.X + XPos), (ContainerPosition.Y + YPos), 0.0f);
+		Positions.Add(Position);
+	}
+}
+
+void ACPPSpaceObject::AddSpaceObjectToOrbit(ACPPOrbitalObject* ObjectToAdd)
+{
+	OrbitalObjects.Add(ObjectToAdd);
+}
+
+void ACPPSpaceObject::ReallocateObjectsOnOrbit()
+{
+	for (int i = 0; i < OrbitalObjects.Num(); i++)
+	{
+		OrbitalObjects[i]->SetActorLocation(Positions[i]);
+	}
+}
+
+void ACPPSpaceObject::RemoveObjectFromOrbit(ACPPOrbitalObject* ObjectToRemove)
+{
+	Positions.Remove(ObjectToRemove->GetActorLocation());
+	OrbitalObjects.Remove(ObjectToRemove);
 }

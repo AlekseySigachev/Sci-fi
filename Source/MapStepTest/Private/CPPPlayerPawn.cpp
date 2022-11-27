@@ -2,30 +2,29 @@
 
 
 #include "CPPPlayerPawn.h"
+#include "CPPPlayerShip.h"
 
-// Sets default values
 ACPPPlayerPawn::ACPPPlayerPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	SetRootComponent(SceneComponent);
+	//SceneComponent->SetRelativeScale3D(FVector(0.05f, 0.05f, 0.05f));
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+	SpringArmComponent->SetupAttachment(GetRootComponent());
+	SpringArmComponent->TargetArmLength = 10.0f;
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetupAttachment(SpringArmComponent);
 }
 
-// Called when the game starts or when spawned
 void ACPPPlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	FActorSpawnParameters SpawnInfo;
+	Ship = GetWorld()->SpawnActor<ACPPPlayerShip>(ACPPPlayerShip::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+	Ship->SetActorScale3D(FVector(0.05f, 0.05f, 0.05f));
 }
 
-// Called every frame
-void ACPPPlayerPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
 void ACPPPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

@@ -14,4 +14,5 @@ class MAPSTEPTEST_API ACPPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	ACPPPlayerController();
+	virtual void BeginPlay() override;
 };

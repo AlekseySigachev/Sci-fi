@@ -157,7 +157,6 @@ FStarsStruct* ACPPMapBuilder::PopRandomStar()
 	FStarsStruct* Item = DataTable->FindRow<FStarsStruct>(RandomName, "");
 	StarsName.Remove(RandomName);
 	return Item;
-	
 }
 
 void ACPPMapBuilder::DiscoverStar(FVector2d key)

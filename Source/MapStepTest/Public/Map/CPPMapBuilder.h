@@ -19,7 +19,6 @@ public:
 protected:
 private:
 	TMap<FVector2d, ACPPSpaceObject*> MaseDict;
-	
 	TArray<ACPPSpaceObject*> DiscoveryHistory;
 	
 	//Methods
@@ -45,5 +44,4 @@ private:
 	UDataTable* DataTable;
 	TArray<FName> StarsName;
 	void Finished();
-
 };

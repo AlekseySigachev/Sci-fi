@@ -30,6 +30,9 @@ public:
 	
 	UPROPERTY()
 	mutable FName Name;
+
+	TArray<FVector> Positions;
+	bool bDiscovered;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -50,21 +53,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ArrowLeft;
 
-	float OrbitalSpeed;
+	float OrbitalSpeed = 0.1f;
 	float Time;
-	float OrbitalRadius;
-	bool bDiscovered;
+	float OrbitalRadius = 5.0f;
 	bool bInside;
 	UMaterialInterface* OpenMaterial;
 	UMaterialInterface* CloseMaterial;
 	ACPPMapBuilder* MapBuilder;
 	TArray<AActor*> OverlappingActors;
 	TArray<ACPPOrbitalObject*> OrbitalObjects;
-	TArray<FVector> Positions;
+
 	ACPPMainGameMode* GameMode;
 
 private:
- int32 GridStep = 10;
+	int32 GridStep = 10;
 	UPROPERTY()
 	UDataTable* DataTable;
 
@@ -80,6 +82,12 @@ public:
 	FVector2d GetCoords() const;
 	TArray<int8> GetAllowDirectionList() const;
 	void Draw();
+	int32 GetGridStep() { return GridStep; };
+	void CalcObjectsPositionsOnOrbit();
+	void AddSpaceObjectToOrbit(ACPPOrbitalObject* ObjectToAdd);
+	void ReallocateObjectsOnOrbit();
+	void RemoveObjectFromOrbit(ACPPOrbitalObject* ObjectToRemove);
+	bool CanGoInside() { return bInside; };
 
 protected:
 	virtual void BeginPlay() override;
@@ -106,6 +114,8 @@ protected:
 	void EnableDirection(int8 direction);
 	void DisableDirection(int8 direction);
 	void DrawArrows() const;
+
+
 
 private:
 

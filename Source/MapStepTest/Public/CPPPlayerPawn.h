@@ -4,26 +4,38 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 #include "CPPPlayerPawn.generated.h"
+
+
+class ACPPSpaceObject;
+class ACPPOrbitalObject;
 
 UCLASS()
 class MAPSTEPTEST_API ACPPPlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
+//Functions
 public:
-	// Sets default values for this pawn's properties
 	ACPPPlayerPawn();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
+	ACPPOrbitalObject* Ship;
+	ACPPSpaceObject* CurrentStar;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:
+	virtual void BeginPlay() override;
+private:
+
+//Variables
+public:
+protected:
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly)
+		USceneComponent* SceneComponent;
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly)
+		USpringArmComponent* SpringArmComponent;
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly)
+		UCameraComponent* CameraComponent;
+private:
 };
