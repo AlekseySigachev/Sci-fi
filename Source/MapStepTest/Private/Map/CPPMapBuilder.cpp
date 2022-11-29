@@ -13,8 +13,11 @@ ACPPMapBuilder::ACPPMapBuilder()
 	PrimaryActorTick.bCanEverTick = false;
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableFinder(TEXT("/Game/ProjectS/Data/DT_Star"));
-	DataTable = DataTableFinder.Object;
-	StarsName = DataTable->GetRowNames();
+	if (DataTableFinder.Succeeded()) 
+	{
+		DataTable = DataTableFinder.Object;
+		StarsName = DataTable->GetRowNames();
+	}
 }
 
 void ACPPMapBuilder::BeginPlay()
@@ -153,7 +156,8 @@ void ACPPMapBuilder::AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName
 
 FStarsStruct* ACPPMapBuilder::PopRandomStar()
 {
-	auto RandomIndex = FMath::RandRange(0, (StarsName.Num() - 1 ));
+	auto RandomIndex = FMath::RandRange(0, StarsName.Num() - 1);
+	//if (!StarsName.IsValidIndex(RandomIndex)) return nullptr;
 	FName RandomName = StarsName[RandomIndex];
 	UE_LOG(LogTemp, Display, TEXT("Discover star = %s"), *RandomName.ToString());
 	FStarsStruct* Item = DataTable->FindRow<FStarsStruct>(RandomName, "");
@@ -168,7 +172,7 @@ void ACPPMapBuilder::DiscoverStar(FVector2d key)
 	Star->SetProperties(StarStruct);
 	Star->OnDiscovered();
 	DiscoveryHistory.Add(Star);
-	if(IsEmpty(StarsName))
+	if(StarsName.IsEmpty())
 	{
 		CleanUnusedArrows();
 	}

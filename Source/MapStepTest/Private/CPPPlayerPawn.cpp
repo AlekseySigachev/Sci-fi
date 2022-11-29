@@ -15,6 +15,9 @@ ACPPPlayerPawn::ACPPPlayerPawn()
 	SpringArmComponent->TargetArmLength = 10.0f;
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+	//Rotate camera
+	FRotator CameraRotation = FRotator(0.0f, 0.0f, 90.0f);
+	CameraComponent->SetRelativeRotation(CameraRotation);
 }
 
 void ACPPPlayerPawn::BeginPlay()

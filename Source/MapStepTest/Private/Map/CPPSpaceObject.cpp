@@ -330,9 +330,9 @@ void ACPPSpaceObject::Draw()
 void ACPPSpaceObject::CalcObjectsPositionsOnOrbit()
 {
 	Positions.Empty();
-	auto ContainerPosition = GetActorLocation();
+	const auto &ContainerPosition = GetActorLocation();
 	auto Step = PI * 2 / OrbitalObjects.Num();
-	for (int i = 1; i < (OrbitalObjects.Num() + 1); i++)
+	for (int i = 1; i <= OrbitalObjects.Num(); i++)
 	{
 		auto Angle = i * Step;
 		auto Cos = UKismetMathLibrary::Cos(Angle + (OrbitalSpeed * Time));

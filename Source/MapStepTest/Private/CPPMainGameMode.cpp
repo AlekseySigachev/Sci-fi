@@ -17,7 +17,7 @@
 
 ACPPMainGameMode::ACPPMainGameMode()
 {
-	DefaultPawnClass = ACPPPlayerPawn::StaticClass();
+	DefaultPawnClass = nullptr;
 	PlayerControllerClass = ACPPPlayerController::StaticClass();
 }
 void ACPPMainGameMode::BeginPlay()
@@ -38,7 +38,8 @@ void ACPPMainGameMode::PossessFirstPlayer()
 void ACPPMainGameMode::PossessNextPlayer()
 {
 	auto NextPlayerIndex = Players.Find(CurrentPlayer) + 1;
-	if (Players.Num() < NextPlayerIndex)
+	if (NextPlayerIndex == -1) return;
+	if (Players.Num() > NextPlayerIndex)
 	{
 		CurrentPlayer = Players[NextPlayerIndex];
 		PlayerController->Possess(CurrentPlayer);
@@ -79,7 +80,7 @@ int8 ACPPMainGameMode::GetPlayerQuantity()
 
 void ACPPMainGameMode::SpawnPlayers(ACPPSpaceObject_Station* Station)
 {
-	for (int i = 0; i <= GetPlayerQuantity(); i++)
+	for (int i = 1; i <= GetPlayerQuantity(); i++)
 	{
 		FActorSpawnParameters SpawnInfo;
 		
@@ -90,13 +91,10 @@ void ACPPMainGameMode::SpawnPlayers(ACPPSpaceObject_Station* Station)
 		Player->CurrentStar = Station;
 		auto PlayersShip = Cast<ACPPPlayerShip>(Player->Ship);
 		PlayersShip->CurrentStar = Station;
-		if (i == GetPlayerQuantity())
-		{
-			PossessFirstPlayer();
-			Station->CalcObjectsPositionsOnOrbit();
-			Station->ReallocateObjectsOnOrbit();
-		} 
 	}
+	PossessFirstPlayer();
+	Station->CalcObjectsPositionsOnOrbit();
+	Station->ReallocateObjectsOnOrbit();
 }
 
 void ACPPMainGameMode::MovePlayerToLocations(ACPPSpaceObject* Target)
@@ -113,52 +111,51 @@ void ACPPMainGameMode::CheckAllowedDirection(ACPPSpaceObject* PlayerStar, ACPPSp
 {
 	auto DirectionList = ShipStar->GetAllowDirectionList();
 	auto ReqDirection = GetRequieredDirection(PlayerStar, ShipStar);
-	auto bValidIndex = DirectionList.IsValidIndex(ReqDirection);
-	OnOffMoveButton(bValidIndex);
+	OnOffMoveButton(!(DirectionList.Find(ReqDirection) == -1));
 }
 
 int8 ACPPMainGameMode::GetRequieredDirection(ACPPSpaceObject* PlayerStar, ACPPSpaceObject* ShipStar)
 {
-	int8 LDirection = 0;
-	auto PlayerStarLocation = PlayerStar->GetActorLocation();
-	auto ShipStarLocation = ShipStar->GetActorLocation();
-	if ((ShipStarLocation != PlayerStarLocation))
-	{
-		auto GridStep = PlayerStar->GetGridStep();
-		auto LocationsSubtruct = ShipStarLocation - PlayerStarLocation;
-		auto bHereOnPosX = (FMath::Abs(LocationsSubtruct.X / GridStep) == 1);
-		auto bHereOnPosY = (FMath::Abs(LocationsSubtruct.Y / GridStep) == 1);
-		auto bNotHereOnPosX = (FMath::Abs(LocationsSubtruct.X / GridStep) == 0);
-		auto bNotHereOnPosY = (FMath::Abs(LocationsSubtruct.Y / GridStep) == 0);
-		if (!(bHereOnPosX || bHereOnPosY))
-		{
-			return LDirection;
-		}
-		else if(!(bNotHereOnPosX && bNotHereOnPosY))
-		{
-			return LDirection;
-		}
-		else if (bNotHereOnPosX)
-		{
-			return TopDownMove(ShipStarLocation, PlayerStarLocation);
-		}
-		else
-		{
-			return LeftRightMove(ShipStarLocation, PlayerStarLocation);
-		}
-		if (bNotHereOnPosY)
-		{
-			return LeftRightMove(ShipStarLocation, PlayerStarLocation);
-		}
-		else
-		{
-			return TopDownMove(ShipStarLocation, PlayerStarLocation);
-		}
-	}
-	else
+	const int8 LDirection = 0;
+	const auto &PlayerStarLocation = PlayerStar->GetActorLocation();
+	const auto &ShipStarLocation = ShipStar->GetActorLocation();
+
+	if (ShipStarLocation == PlayerStarLocation)
 	{
 		return LDirection;
 	}
+	else if (ShipStarLocation != PlayerStarLocation)
+	{
+		const auto& GridStep = PlayerStar->GetGridStep();
+		auto LocationsSubtruct = ShipStarLocation - PlayerStarLocation;
+		auto bHorizontalMove = LocationsSubtruct.X / GridStep != 0;
+		auto bVerticalMove = LocationsSubtruct.Y / GridStep != 0;
+		// запрещаем движение по диагонали
+		if (bVerticalMove && bHorizontalMove)
+		{
+			return LDirection;
+		}
+
+		const bool bMoveInOneCell = FMath::Abs(LocationsSubtruct.X / GridStep) == 1
+									|| FMath::Abs(LocationsSubtruct.Y / GridStep) == 1;
+
+		// запрещаем если движение дальше одной ячейки 
+		if (!bMoveInOneCell)
+		{
+			return LDirection;
+		}
+
+		if (bVerticalMove)
+		{
+			return TopDownMove(ShipStarLocation, PlayerStarLocation);
+		}
+		else if (bHorizontalMove)
+		{
+			return LeftRightMove(ShipStarLocation, PlayerStarLocation);
+		}
+	}
+	// если чего то не учли - то запрещаем движение
+	return LDirection;
 }
 
 int8 ACPPMainGameMode::TopDownMove(FVector ShipLoc, FVector PlayerLoc)
@@ -171,7 +168,6 @@ int8 ACPPMainGameMode::TopDownMove(FVector ShipLoc, FVector PlayerLoc)
 	{
 		return 4;
 	}
-
 }
 
 int8 ACPPMainGameMode::LeftRightMove(FVector ShipLoc, FVector PlayerLoc)
