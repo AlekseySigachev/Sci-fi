@@ -29,8 +29,6 @@ public:
 	void AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName Name);
 	FStarsStruct* PopRandomStar();
 	void DiscoverStar(FVector2d key);
-
-protected:
 	virtual void BeginPlay() override;
 	void AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key);
 	void CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords);
@@ -38,6 +36,9 @@ protected:
 	void CleanUnusedArrows();
 	FVector2d CalcNewDelta(int8 Direction);
 	bool IsEmpty(TArray<FName> Array);
+
+protected:
+
 
 private:
 	UPROPERTY()

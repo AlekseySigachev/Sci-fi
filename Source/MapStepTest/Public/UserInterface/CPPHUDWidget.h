@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "CPPHUDWidget.generated.h"
 
+class ACPPMainGameMode;
 
 /**
  * 
@@ -24,4 +25,17 @@ public:
 		UButton* GoOutside;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		UButton* Move;
+
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+		void OnEndTurnButtonClicked();
+	UFUNCTION()
+		void OnGoInsideButtonClicked();
+	UFUNCTION()
+		void OnGoOutSideButtonClicked();
+	UFUNCTION()
+		void OnMoveButtonClicked();
+
+	ACPPMainGameMode* GameMode;
 };

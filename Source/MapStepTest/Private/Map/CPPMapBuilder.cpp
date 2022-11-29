@@ -33,22 +33,22 @@ void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key)
 
 void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords)
 {
-	for (const auto Direction : AllowDirectionList)
+	for (int i = 0; i < AllowDirectionList.Num(); i++)
 	{
-		const auto DeltaCoords = CalcNewDelta(Direction);
-		FVector2d KeyToFind = FVector2d(DeltaCoords.X, DeltaCoords.Y);
-		if(!MaseDict.FindRef(KeyToFind))
+		const auto DeltaCoords = CalcNewDelta(AllowDirectionList[i]);
+		FVector2d KeyToFind = DeltaCoords + Coords;
+		if (!MaseDict.FindRef(KeyToFind))
 		{
 			const FTransform SpawnTransform(FRotator::ZeroRotator, FVector::ZeroVector);
 			ACPPSpaceObject_Star* Star = GetWorld()->SpawnActorDeferred<ACPPSpaceObject_Star>
-													(ACPPSpaceObject_Star::StaticClass(), SpawnTransform);
-			if(!Star) return;
+				(ACPPSpaceObject_Star::StaticClass(), SpawnTransform);
+			if (!Star) return;
 			UE_LOG(MapBuilderLog, Display, TEXT("Undiscovered Star: %s created"), *Star->GetName());
-			Star->PosX = DeltaCoords.X;
-			Star->PosY = DeltaCoords.Y;
+			Star->PosX = KeyToFind.X;
+			Star->PosY = KeyToFind.Y;
 			Star->FinishSpawning(SpawnTransform);
 			Star->Draw();
-			UE_LOG(MapBuilderLog, Display, TEXT("Undiscovered Star: %s initialized"), *Star->GetName());
+			//UE_LOG(MapBuilderLog, Display, TEXT("Undiscovered Star: %s initialized"), *Star->GetName());
 			MaseDict.Add(KeyToFind, Star);
 		}
 		Finished();
@@ -119,7 +119,7 @@ void ACPPMapBuilder::Finished()
 	{
 		auto Key = Test.Key;
 		auto Value = Test.Value;
-		UE_LOG(MapBuilderLog, Error, TEXT("%s key is: %s"), *Value->GetName(), *Key.ToString());
+		//UE_LOG(MapBuilderLog, Error, TEXT("%s key is: %s"), *Value->GetName(), *Key.ToString());
 	}
 }
 
@@ -153,7 +153,9 @@ void ACPPMapBuilder::AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName
 
 FStarsStruct* ACPPMapBuilder::PopRandomStar()
 {
-	const FName RandomName = StarsName[FMath::RandRange(0, StarsName.Num())];
+	auto RandomIndex = FMath::RandRange(0, (StarsName.Num() - 1 ));
+	FName RandomName = StarsName[RandomIndex];
+	UE_LOG(LogTemp, Display, TEXT("Discover star = %s"), *RandomName.ToString());
 	FStarsStruct* Item = DataTable->FindRow<FStarsStruct>(RandomName, "");
 	StarsName.Remove(RandomName);
 	return Item;

@@ -6,7 +6,11 @@
 
 #include "Engine/DataTable.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "CPPMainGameMode.h"
 #include "Map/CPPOrbitalObject.h"
+#include "Map/CPPMapBuilder.h"
+
 DEFINE_LOG_CATEGORY_STATIC(SpaceObjectLog, All, All);
 
 ACPPSpaceObject::ACPPSpaceObject()
@@ -67,17 +71,25 @@ ACPPSpaceObject::ACPPSpaceObject()
 	Rotation = FRotator(0.0f ,90.0f ,0.0f);
 	Location = FVector(100.0f, 0.0f, 0.0f);;
 	AllocateArrow(ArrowLeft, SM_Arrow, MI_Arrow, Scale, Location, Rotation);
+
 }
 
 void ACPPSpaceObject::BeginPlay()
 {
 	Super::BeginPlay();
+	GameMode = Cast<ACPPMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	MapBuilder = Cast<ACPPMapBuilder>(UGameplayStatics::GetActorOfClass(GetWorld(), ACPPMapBuilder::StaticClass()));
 	CentralObject->OnClicked.AddDynamic(this, &ACPPSpaceObject::OnClicked);
+	if (!bDiscovered)
+	{
+		Draw();
+	}
 }
 
 void ACPPSpaceObject::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
 	UE_LOG(LogTemp, Error, TEXT("Test with %s"),*TouchedComponent->GetName());
+	GameMode->MovePlayerToLocations(this);
 }
 
 void ACPPSpaceObject::Tick(float DeltaTime)
@@ -349,4 +361,13 @@ void ACPPSpaceObject::RemoveObjectFromOrbit(ACPPOrbitalObject* ObjectToRemove)
 {
 	Positions.Remove(ObjectToRemove->GetActorLocation());
 	OrbitalObjects.Remove(ObjectToRemove);
+}
+
+void ACPPSpaceObject::DiscoverStar()
+{
+	if (bDiscovered) return;
+	if (!Name.IsNone()) return;
+	MapBuilder->DiscoverStar(GetCoords());
+	MapBuilder->CreateUndiscoveredStars(GetAllowDirectionList(), GetCoords());
+	bDiscovered = true;
 }

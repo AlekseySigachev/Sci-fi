@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "UserInterface/CPPHUDWidget.h"
 #include "CPPMainGameMode.generated.h"
 
 class ACPPSpaceObject;
 class ACPPSpaceObject_Station;
 class ACPPPlayerPawn;
 class ACPPPlayerController;
+class UCPPHUDWidget;
 /**
  * 
  */
@@ -30,12 +30,15 @@ public:
 	int8 GetRequieredDirection(ACPPSpaceObject* PlayerStar, ACPPSpaceObject* ShipStar);
 	int8 TopDownMove(FVector ShipLoc, FVector PlayerLoc);
 	int8 LeftRightMove(FVector ShipLoc, FVector PlayerLoc);
+	void OnOffMoveButton(bool Switch);
+	void MoveShipToLocation();
+	void PossessFirstPlayer();
+	void PossessNextPlayer();
 
 protected:
 	virtual void BeginPlay() override;
 private:
-	void PossessFirstPlayer();
-	void PossessNextPlayer();
+
 	void CreateHUDWidget();
 	void ReallocatePlayer();
 	void ToggleInsideButton(ACPPSpaceObject* Target);

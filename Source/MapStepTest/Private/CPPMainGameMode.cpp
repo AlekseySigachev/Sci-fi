@@ -12,6 +12,7 @@
 #include "Math/Vector.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "UserInterface/CPPHUDWidget.h"
 
 
 ACPPMainGameMode::ACPPMainGameMode()
@@ -112,6 +113,8 @@ void ACPPMainGameMode::CheckAllowedDirection(ACPPSpaceObject* PlayerStar, ACPPSp
 {
 	auto DirectionList = ShipStar->GetAllowDirectionList();
 	auto ReqDirection = GetRequieredDirection(PlayerStar, ShipStar);
+	auto bValidIndex = DirectionList.IsValidIndex(ReqDirection);
+	OnOffMoveButton(bValidIndex);
 }
 
 int8 ACPPMainGameMode::GetRequieredDirection(ACPPSpaceObject* PlayerStar, ACPPSpaceObject* ShipStar)
@@ -181,4 +184,33 @@ int8 ACPPMainGameMode::LeftRightMove(FVector ShipLoc, FVector PlayerLoc)
 	{
 		return 8;
 	}
+}
+
+void ACPPMainGameMode::OnOffMoveButton(bool Switch)
+{
+	HUD->Move->SetIsEnabled(Switch);
+	if (Switch)
+	{
+		HUD->Move->SetBackgroundColor(FColor::Green);
+	}
+	else 
+	{
+		HUD->Move->SetBackgroundColor(FColor::Red);
+	}
+}
+
+void ACPPMainGameMode::MoveShipToLocation()
+{
+	auto DestStar = CurrentPlayer->CurrentStar;
+	auto PlayerShip = Cast<ACPPPlayerShip>(CurrentPlayer->Ship);
+	auto SourceStar = PlayerShip->CurrentStar;
+	PlayerShip->CurrentStar = DestStar;
+	DestStar->AddSpaceObjectToOrbit(PlayerShip);
+	DestStar->CalcObjectsPositionsOnOrbit();
+	DestStar->ReallocateObjectsOnOrbit();
+	SourceStar->RemoveObjectFromOrbit(PlayerShip);
+	SourceStar->CalcObjectsPositionsOnOrbit();
+	SourceStar->ReallocateObjectsOnOrbit();
+	DestStar->DiscoverStar();
+	ToggleInsideButton(DestStar);
 }

@@ -88,6 +88,7 @@ public:
 	void ReallocateObjectsOnOrbit();
 	void RemoveObjectFromOrbit(ACPPOrbitalObject* ObjectToRemove);
 	bool CanGoInside() { return bInside; };
+	void DiscoverStar();
 
 protected:
 	virtual void BeginPlay() override;
