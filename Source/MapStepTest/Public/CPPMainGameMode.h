@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include <Map/CPPScene.h>
 #include "GameFramework/GameModeBase.h"
 #include "CPPMainGameMode.generated.h"
+
 
 class ACPPSpaceObject;
 class ACPPSpaceObject_Station;
@@ -42,6 +44,7 @@ private:
 	void CreateHUDWidget();
 	void ReallocatePlayer();
 	void ToggleInsideButton(ACPPSpaceObject* Target);
+	void DrawScene();
 
 //Variables
 
@@ -53,11 +56,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Parameters")
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 	//TODO
-	//MainScene
+	ACPPScene* MainScene;
+	ACPPScene* SubScene;
 	//SolarSystemBuilder
 protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Parameters")
 	TSubclassOf<AActor> PlayerClass;
 	UCPPHUDWidget* HUD;
+	FVector Delta = FVector(600.0f, 0.0f, 0.0f);
 };

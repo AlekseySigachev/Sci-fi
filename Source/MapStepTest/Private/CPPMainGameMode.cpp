@@ -28,6 +28,7 @@ void ACPPMainGameMode::BeginPlay()
 	SpawnPlayers(StartStation);
 	CreateHUDWidget();
 	ReallocatePlayer();
+	DrawScene();
 }
 
 void ACPPMainGameMode::PossessFirstPlayer()
@@ -209,4 +210,13 @@ void ACPPMainGameMode::MoveShipToLocation()
 	SourceStar->ReallocateObjectsOnOrbit();
 	DestStar->DiscoverStar();
 	ToggleInsideButton(DestStar);
+}
+
+void ACPPMainGameMode::DrawScene()
+{
+	FActorSpawnParameters SpawnInfo;
+
+	MainScene = GetWorld()->SpawnActor<ACPPScene>(ACPPScene::StaticClass(), StartStation->GetActorLocation(), FRotator::ZeroRotator, SpawnInfo);
+	auto SubSceneLocation = MainScene->GetActorLocation() + Delta;
+	SubScene = GetWorld()->SpawnActor<ACPPScene>(ACPPScene::StaticClass(), SubSceneLocation, FRotator::ZeroRotator, SpawnInfo);
 }
