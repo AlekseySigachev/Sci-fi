@@ -7,7 +7,6 @@
 #include "Views/SInteractiveCurveEditorView.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MapBuilderLog, All, All);
-// Sets default values
 ACPPMapBuilder::ACPPMapBuilder()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -51,7 +50,6 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FV
 			Star->PosY = KeyToFind.Y;
 			Star->FinishSpawning(SpawnTransform);
 			Star->Draw();
-			//UE_LOG(MapBuilderLog, Display, TEXT("Undiscovered Star: %s initialized"), *Star->GetName());
 			MaseDict.Add(KeyToFind, Star);
 		}
 		Finished();
@@ -61,11 +59,11 @@ void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FV
 
 void ACPPMapBuilder::DeleteUndiscoveredStars(TArray<ACPPSpaceObject*> Stars)
 {
-	for (auto Star : Stars)
+	for (auto i = 0; i < Stars.Num(); i++)
 	{
-		if(!Star->Name.IsNone()) return;
-		auto Coords = Star->GetCoords();
-		Star->Destroy();
+		if (!Stars[i]->Name.IsNone()) continue;
+		auto Coords = Stars[i]->GetCoords();
+		Stars[i]->Destroy();
 		MaseDict.Remove(Coords);
 	}
 }
@@ -122,11 +120,9 @@ void ACPPMapBuilder::Finished()
 	{
 		auto Key = Test.Key;
 		auto Value = Test.Value;
-		//UE_LOG(MapBuilderLog, Error, TEXT("%s key is: %s"), *Value->GetName(), *Key.ToString());
 	}
 }
 
-// Called every frame
 void ACPPMapBuilder::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -156,10 +152,8 @@ void ACPPMapBuilder::AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName
 
 FStarsStruct* ACPPMapBuilder::PopRandomStar()
 {
-	auto RandomIndex = FMath::RandRange(0, StarsName.Num() - 1);
-	//if (!StarsName.IsValidIndex(RandomIndex)) return nullptr;
+	auto RandomIndex = FMath::RandRange(1, StarsName.Num()) - 1;
 	FName RandomName = StarsName[RandomIndex];
-	UE_LOG(LogTemp, Display, TEXT("Discover star = %s"), *RandomName.ToString());
 	FStarsStruct* Item = DataTable->FindRow<FStarsStruct>(RandomName, "");
 	StarsName.Remove(RandomName);
 	return Item;

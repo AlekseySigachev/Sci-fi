@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "CPPPlayerPawn.h"
 #include "CPPPlayerShip.h"
 
@@ -31,6 +30,4 @@ void ACPPPlayerPawn::BeginPlay()
 void ACPPPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
-
