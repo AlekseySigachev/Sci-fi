@@ -270,13 +270,13 @@ int32 ACPPSpaceObject::CalcDirection(int32 CalcDirection) const
 	return  CalcDirection & Direction;
 }
 
-void ACPPSpaceObject::EnableDirection(int32 direction)
+void ACPPSpaceObject::EnableDirection(int32 DirectionToEnable)
 {
-	Direction = direction | Direction;
+	Direction = DirectionToEnable | Direction;
 }
-void ACPPSpaceObject::DisableDirection(int32 direction)
+void ACPPSpaceObject::DisableDirection(int32 DirectionToDisable)
 {
-	Direction = ~direction & Direction;
+	Direction = ~DirectionToDisable & Direction;
 }
 
 TArray<int32> ACPPSpaceObject::GetAllowDirectionList() const

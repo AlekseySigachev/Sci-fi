@@ -55,7 +55,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, DisplayName = "OrbitalSpeed", Category = "Main|Set UP")
 	float OrbitalSpeed = 0.1f;
-	UPROPERTY(BlueprintReadOnly, DisplayName = "Time", Category = "Main|et UP")
+	UPROPERTY(BlueprintReadOnly, DisplayName = "Time", Category = "Main|Set UP")
 	float Time;
 	UPROPERTY(BlueprintReadWrite, DisplayName = "OrbitalRadius", Category = "Main|Set UP")
 	float OrbitalRadius = 5.0f;
@@ -115,35 +115,46 @@ public:
 	UFUNCTION(BlueprintCallable, DisplayName = "Reallocate SpaceObjects Positions On Orbit", Category = "Main|Functions")
 	void DiscoverStar();
 
-	UFUNCTION(BlueprintCallable, DisplayName = "Event On Click", Category = "Main|Events")
+	UFUNCTION()
 		void OnStarClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, DisplayName = "Allocate Star Arrows", Category = "Main|Functions")
 	void AllocateArrow(UStaticMeshComponent *Arrow, UStaticMesh* a_ArrowMesh, //
 		UMaterialInstance* a_ArrowMaterial, FVector Scale, FVector Location, FRotator Rotation ) const;
-	//int32 GetGridStep() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Enable Top Arrow", Category = "Main|Functions")
 	void EnableArrowTop() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Enable Right Arrow", Category = "Main|Functions")
 	void EnableArrowRight() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Enable Down Arrow", Category = "Main|Functions")
 	void EnableArrowDown() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Enable Left Arrow", Category = "Main|Functions")
 	void EnableArrowLeft() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Disable Top Arrow", Category = "Main|Functions")
 	void DisableArrowTop() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Disable Right Arrow", Category = "Main|Functions")
 	void DisableArrowRight() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Disable Down Arrow", Category = "Main|Functions")
 	void DisableArrowDown() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Disable Left Arrow", Category = "Main|Functions")
 	void DisableArrowLeft() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Can Move Top", Category = "Main|Functions", BlueprintPure)
 	bool CanMoveTop() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Can Move Down", Category = "Main|Functions", BlueprintPure)
 	bool CanMoveDown() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Can Move Right", Category = "Main|Functions", BlueprintPure)
 	bool CanMoveRight() const;
+	UFUNCTION(BlueprintCallable, DisplayName = "Can Move Left", Category = "Main|Functions", BlueprintPure)
 	bool CanMoveLeft() const;
 	int32 CalcDirection(int32 CalcDirection) const;
-	void EnableDirection(int32 direction);
-	void DisableDirection(int32 direction);
+	UFUNCTION(BlueprintCallable, DisplayName = "Enable Direction", Category = "Main|Functions")
+	void EnableDirection(int32 DirectionToEnable);
+	UFUNCTION(BlueprintCallable, DisplayName = "Disable Direction", Category = "Main|Functions")
+	void DisableDirection(int32 DirectionToDisable);
+	UFUNCTION(BlueprintCallable, DisplayName = "Draw Arrows", Category = "Main|Functions")
 	void DrawArrows() const;
 
-
-
 private:
-
 };
-
