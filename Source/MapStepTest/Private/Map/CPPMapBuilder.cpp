@@ -33,7 +33,7 @@ void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key)
 	UE_LOG(MapBuilderLog, Display, TEXT("Object: %s added to histtory"), *Object->GetName());
 }
 
-void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords)
+void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int32> AllowDirectionList, FVector2d Coords)
 {
 	for (int i = 0; i < AllowDirectionList.Num(); i++)
 	{
@@ -71,7 +71,7 @@ void ACPPMapBuilder::DeleteUndiscoveredStars(TArray<ACPPSpaceObject*> Stars)
 void ACPPMapBuilder::CleanUnusedArrows()
 {
 	TArray<ACPPSpaceObject*> MapStars;
-	TArray<FVector2d> Keys;
+	TArray<FVector2D> Keys;
 	MaseDict.GetKeys(Keys);
 	for (auto Key : Keys)
 	{
@@ -94,7 +94,7 @@ void ACPPMapBuilder::CleanUnusedArrows()
 	}
 }
 
-FVector2d ACPPMapBuilder::CalcNewDelta(int8 Direction)
+FVector2d ACPPMapBuilder::CalcNewDelta(int32 Direction)
 {
 	switch (Direction)
 	{
@@ -128,7 +128,7 @@ void ACPPMapBuilder::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ACPPMapBuilder::AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName Name)
+void ACPPMapBuilder::AddStartStation(int32 Direction, int32 PosX, int32 PosY, FName Name)
 {
 	const FTransform SpawnTransform(FRotator::ZeroRotator, FVector::ZeroVector);
 	ACPPSpaceObject_Station* StartStation = GetWorld()->SpawnActorDeferred<ACPPSpaceObject_Station>

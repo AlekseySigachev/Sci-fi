@@ -26,15 +26,15 @@ private:
 public:	
 	ACPPMapBuilder();
 	virtual void Tick(float DeltaTime) override;
-	void AddStartStation(int8 Direction, int8 PosX, int8 PosY, FName Name);
+	void AddStartStation(int32 Direction, int32 PosX, int32 PosY, FName Name);
 	FStarsStruct* PopRandomStar();
 	void DiscoverStar(FVector2d key);
 	virtual void BeginPlay() override;
 	void AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key);
-	void CreateUndiscoveredStars(TArray<int8> AllowDirectionList, FVector2d Coords);
+	void CreateUndiscoveredStars(TArray<int32> AllowDirectionList, FVector2d Coords);
 	void DeleteUndiscoveredStars(TArray<ACPPSpaceObject*> Stars);
 	void CleanUnusedArrows();
-	FVector2d CalcNewDelta(int8 Direction);
+	FVector2d CalcNewDelta(int32 Direction);
 	bool IsEmpty(TArray<FName> Array);
 
 protected:

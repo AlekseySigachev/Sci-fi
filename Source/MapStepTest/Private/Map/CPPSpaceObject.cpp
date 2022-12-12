@@ -10,6 +10,7 @@
 #include "CPPMainGameMode.h"
 #include "Map/CPPOrbitalObject.h"
 #include "Map/CPPMapBuilder.h"
+#include "MapStepTest/CustomStructs.h"
 
 DEFINE_LOG_CATEGORY_STATIC(SpaceObjectLog, All, All);
 
@@ -79,14 +80,14 @@ void ACPPSpaceObject::BeginPlay()
 	Super::BeginPlay();
 	GameMode = Cast<ACPPMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	MapBuilder = Cast<ACPPMapBuilder>(UGameplayStatics::GetActorOfClass(GetWorld(), ACPPMapBuilder::StaticClass()));
-	CentralObject->OnClicked.AddDynamic(this, &ACPPSpaceObject::OnClicked);
+	CentralObject->OnClicked.AddDynamic(this, &ACPPSpaceObject::OnStarClicked);
 	if (!bDiscovered)
 	{
 		Draw();
 	}
 }
 
-void ACPPSpaceObject::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
+void ACPPSpaceObject::OnStarClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
 	UE_LOG(LogTemp, Error, TEXT("Test with %s"),*TouchedComponent->GetName());
 	GameMode->MovePlayerToLocations(this);
@@ -108,6 +109,7 @@ void ACPPSpaceObject::OnDiscovered() const
 
 void ACPPSpaceObject::SetProperties(FStarsStruct* Struct)
 {
+	/*FStarsStruct* StarStract = Cast<FStarsStruct>(Struct);*/
 	Name = Struct->Name;
 	Direction = Struct->Direction;
 	OpenMaterial = Struct->Material;
@@ -136,10 +138,10 @@ FVector2d ACPPSpaceObject::GetCoords() const
 	return FVector2d(PosX, PosY);
 }
 
-int32 ACPPSpaceObject::GetGridStep() const
-{
-	return GridStep;
-}
+//int32 ACPPSpaceObject::GetGridStep() const
+//{
+//	return GridStep;
+//}
 
 void ACPPSpaceObject::EnableArrowTop() const
 {
@@ -181,7 +183,7 @@ void ACPPSpaceObject::DisableArrowLeft() const
 	ArrowLeft->SetVisibility(false);
 }
 
-void ACPPSpaceObject::DisableArrowAndDirection(int8 direction)
+void ACPPSpaceObject::DisableArrowAndDirection(int32 direction)
 {
 	switch (direction)
 	{
@@ -212,7 +214,7 @@ void ACPPSpaceObject::DisableArrowAndDirection(int8 direction)
 	}
 }
 
-void ACPPSpaceObject::EnableArrowAndDirection(int8 direction)
+void ACPPSpaceObject::EnableArrowAndDirection(int32 direction)
 {
 	switch (direction)
 	{
@@ -263,23 +265,23 @@ bool ACPPSpaceObject::CanMoveLeft() const
 	return CalcDirection(8)== 8;
 }
 
-int8 ACPPSpaceObject::CalcDirection(int8 CalcDirection) const
+int32 ACPPSpaceObject::CalcDirection(int32 CalcDirection) const
 {
 	return  CalcDirection & Direction;
 }
 
-void ACPPSpaceObject::EnableDirection(int8 direction)
+void ACPPSpaceObject::EnableDirection(int32 direction)
 {
 	Direction = direction | Direction;
 }
-void ACPPSpaceObject::DisableDirection(int8 direction)
+void ACPPSpaceObject::DisableDirection(int32 direction)
 {
 	Direction = ~direction & Direction;
 }
 
-TArray<int8> ACPPSpaceObject::GetAllowDirectionList() const
+TArray<int32> ACPPSpaceObject::GetAllowDirectionList() const
 {
-	TArray<int8> DirectionList;
+	TArray<int32> DirectionList;
 	if(CanMoveTop())
 	{
 		DirectionList.Add(1);
