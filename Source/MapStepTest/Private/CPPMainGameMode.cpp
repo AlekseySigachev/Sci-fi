@@ -73,7 +73,7 @@ void ACPPMainGameMode::ToggleInsideButton(ACPPSpaceObject* Target)
 	HUD->GoInside->SetIsEnabled(Target->CanGoInside() && Target->bDiscovered);
 }
 
-int8 ACPPMainGameMode::GetPlayerQuantity()
+int32 ACPPMainGameMode::GetPlayerQuantity()
 {
 	const auto GameInstance = Cast<UCPPMainGameInstance>(GetGameInstance());
 	return GameInstance->PlayersQuantity;
@@ -115,9 +115,9 @@ void ACPPMainGameMode::CheckAllowedDirection(ACPPSpaceObject* PlayerStar, ACPPSp
 	OnOffMoveButton(!(DirectionList.Find(ReqDirection) == -1));
 }
 
-int8 ACPPMainGameMode::GetRequieredDirection(ACPPSpaceObject* PlayerStar, ACPPSpaceObject* ShipStar)
+int32 ACPPMainGameMode::GetRequieredDirection(ACPPSpaceObject* PlayerStar, ACPPSpaceObject* ShipStar)
 {
-	const int8 LDirection = 0;
+	const int32 LDirection = 0;
 	const auto &PlayerStarLocation = PlayerStar->GetActorLocation();
 	const auto &ShipStarLocation = ShipStar->GetActorLocation();
 
@@ -159,7 +159,7 @@ int8 ACPPMainGameMode::GetRequieredDirection(ACPPSpaceObject* PlayerStar, ACPPSp
 	return LDirection;
 }
 
-int8 ACPPMainGameMode::TopDownMove(FVector ShipLoc, FVector PlayerLoc)
+int32 ACPPMainGameMode::TopDownMove(FVector ShipLoc, FVector PlayerLoc)
 {
 	if ((ShipLoc.Y - PlayerLoc.Y) < 0) 
 	{
@@ -171,7 +171,7 @@ int8 ACPPMainGameMode::TopDownMove(FVector ShipLoc, FVector PlayerLoc)
 	}
 }
 
-int8 ACPPMainGameMode::LeftRightMove(FVector ShipLoc, FVector PlayerLoc)
+int32 ACPPMainGameMode::LeftRightMove(FVector ShipLoc, FVector PlayerLoc)
 {
 	if ((ShipLoc.X - PlayerLoc.X) > 0)
 	{

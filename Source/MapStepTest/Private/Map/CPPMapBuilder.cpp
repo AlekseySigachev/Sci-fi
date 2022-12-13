@@ -25,7 +25,7 @@ void ACPPMapBuilder::BeginPlay()
 	AddStartStation(15, 0, 0, "StartStation");
 }
 
-void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key)
+void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FVector2D Key)
 {
 	MaseDict.Add(Key, Object);
 	DiscoveryHistory.Add(Object);
@@ -33,12 +33,12 @@ void ACPPMapBuilder::AddKeyAndHistory(ACPPSpaceObject* Object, FVector2d Key)
 	UE_LOG(MapBuilderLog, Display, TEXT("Object: %s added to histtory"), *Object->GetName());
 }
 
-void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int32> AllowDirectionList, FVector2d Coords)
+void ACPPMapBuilder::CreateUndiscoveredStars(TArray<int32> AllowDirectionList, FVector2D Coords)
 {
 	for (int i = 0; i < AllowDirectionList.Num(); i++)
 	{
 		const auto DeltaCoords = CalcNewDelta(AllowDirectionList[i]);
-		FVector2d KeyToFind = DeltaCoords + Coords;
+		FVector2D KeyToFind = DeltaCoords + Coords;
 		if (!MaseDict.FindRef(KeyToFind))
 		{
 			const FTransform SpawnTransform(FRotator::ZeroRotator, FVector::ZeroVector);
@@ -94,16 +94,16 @@ void ACPPMapBuilder::CleanUnusedArrows()
 	}
 }
 
-FVector2d ACPPMapBuilder::CalcNewDelta(int32 Direction)
+FVector2D ACPPMapBuilder::CalcNewDelta(int32 Direction)
 {
 	switch (Direction)
 	{
-	case 1: return FVector2d(0.0f, 1.0f);
-	case 2: return FVector2d(-1.0f, 0.0f);
-	case 4: return FVector2d(0.0f, -1.0f);
-	case 8: return FVector2d(1.0f, 0.0f);
+	case 1: return FVector2D(0.0f, 1.0f);
+	case 2: return FVector2D(-1.0f, 0.0f);
+	case 4: return FVector2D(0.0f, -1.0f);
+	case 8: return FVector2D(1.0f, 0.0f);
 	
-	default: return FVector2d::ZeroVector;
+	default: return FVector2D::ZeroVector;
 	
 	}
 }
@@ -115,7 +115,7 @@ bool ACPPMapBuilder::IsEmpty(TArray<FName> Array)
 
 void ACPPMapBuilder::Finished()
 {
-	TArray<FVector2d> test;
+	TArray<FVector2D> test;
 	for (auto Test : MaseDict)
 	{
 		auto Key = Test.Key;
@@ -144,7 +144,7 @@ void ACPPMapBuilder::AddStartStation(int32 Direction, int32 PosX, int32 PosY, FN
 		StartStation->OnDiscovered();
 		StartStation->Draw();
 		UE_LOG(MapBuilderLog, Display, TEXT("StartStation: %s initialized"), *StartStation->GetName());
-		const FVector2d Key = FVector2d(PosX, PosY);
+		const FVector2D Key = FVector2D(PosX, PosY);
 		AddKeyAndHistory(StartStation, Key);
 		CreateUndiscoveredStars(StartStation->GetAllowDirectionList(), StartStation->GetCoords());
 	}
@@ -154,12 +154,12 @@ FStarsStruct* ACPPMapBuilder::PopRandomStar()
 {
 	auto RandomIndex = FMath::RandRange(1, StarsName.Num()) - 1;
 	FName RandomName = StarsName[RandomIndex];
-	FStarsStruct* Item = DataTable->FindRow<FStarsStruct>(RandomName, "");
+	auto Item = DataTable->FindRow<FStarsStruct>(RandomName, "");
 	StarsName.Remove(RandomName);
 	return Item;
 }
 
-void ACPPMapBuilder::DiscoverStar(FVector2d key)
+void ACPPMapBuilder::DiscoverStar(FVector2D key)
 {
 	FStarsStruct* StarStruct = PopRandomStar();
 	ACPPSpaceObject* Star = MaseDict.FindRef(key);

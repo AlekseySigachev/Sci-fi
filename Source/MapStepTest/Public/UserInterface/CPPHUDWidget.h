@@ -25,17 +25,17 @@ public:
 		UButton* GoOutside;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		UButton* Move;
+	UPROPERTY(BlueprintReadWrite, Category = "Main|Set UP")
+		ACPPMainGameMode* GameMode;
 
 	virtual void NativeConstruct() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Main|Functions")
 		void OnEndTurnButtonClicked();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Main|Functions")
 		void OnGoInsideButtonClicked();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Main|Functions")
 		void OnGoOutSideButtonClicked();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Main|Functions")
 		void OnMoveButtonClicked();
-
-	ACPPMainGameMode* GameMode;
 };

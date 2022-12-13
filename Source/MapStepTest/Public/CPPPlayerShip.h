@@ -15,13 +15,13 @@ class MAPSTEPTEST_API ACPPPlayerShip : public ACPPOrbitalObject
 	//Functions
 public:	
 	ACPPPlayerShip();
-	ACPPSpaceObject* CurrentStar;
-
 protected:
 private:
 
 	//Variables
 public:
+	UPROPERTY(BlueprintReadWrite, DisplayName = "Current Ship Star", Category = "Main|References")
+	ACPPSpaceObject* CurrentStar;
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		USceneComponent* SceneComponent;

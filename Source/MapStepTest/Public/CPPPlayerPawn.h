@@ -20,8 +20,6 @@ class MAPSTEPTEST_API ACPPPlayerPawn : public APawn
 //Functions
 public:
 	ACPPPlayerPawn();
-	ACPPOrbitalObject* Ship;
-	ACPPSpaceObject* CurrentStar;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
@@ -30,6 +28,10 @@ private:
 
 //Variables
 public:
+	UPROPERTY(BlueprintReadWrite, DisplayName = "Player Ship", Category = "Main|References")
+	ACPPOrbitalObject* Ship;
+	UPROPERTY(BlueprintReadWrite, DisplayName = "Current Player Star", Category = "Main|References")
+	ACPPSpaceObject* CurrentStar;
 protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly)
 		USceneComponent* SceneComponent;

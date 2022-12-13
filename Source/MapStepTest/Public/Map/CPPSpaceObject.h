@@ -88,7 +88,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintCallable, DisplayName = "On Star Discovered", Category = "Main|Functions")
 	void OnDiscovered() const;
-	/*UFUNCTION(BlueprintCallable, DisplayName = "Set Default Star Properties", Category = "Main|Functions")*/
+	//UFUNCTION()
 	void SetProperties(FStarsStruct* Struct);
 	UFUNCTION(BlueprintCallable, DisplayName = "Disable Arrow And Direction", Category = "Main|Functions")
 	void DisableArrowAndDirection(int32 DirectionToDisable);
@@ -100,8 +100,8 @@ public:
 	TArray<int32> GetAllowDirectionList() const;
 	UFUNCTION(BlueprintCallable, DisplayName = "Draw", Category = "Main|Functions")
 	void Draw();
-	UFUNCTION(BlueprintCallable, DisplayName = "Get Grid Step", Category = "Main|Functions", BlueprintPure)
-	int32 GetGridStep() { return GridStep; };
+	UFUNCTION(BlueprintCallable, DisplayName = "Get Grid Step", Category = "Main|Getters", BlueprintPure)
+	FORCEINLINE int32 GetGridStep() { return GridStep; };
 	UFUNCTION(BlueprintCallable, DisplayName = "Calculate SpaceObjects Positions On Orbit", Category = "Main|Functions")
 	void CalcObjectsPositionsOnOrbit();
 	UFUNCTION(BlueprintCallable, DisplayName = "Add SpaceObject To Orbit", Category = "Main|Functions")
@@ -110,8 +110,8 @@ public:
 	void ReallocateObjectsOnOrbit();
 	UFUNCTION(BlueprintCallable, DisplayName = "Remove SpaceObjects From Orbit", Category = "Main|Functions")
 	void RemoveObjectFromOrbit(ACPPOrbitalObject* ObjectToRemove);
-	UFUNCTION(BlueprintCallable, DisplayName = "Can Go Inside", Category = "Main|Functions", BlueprintPure)
-	bool CanGoInside() { return bInside; };
+	UFUNCTION(BlueprintCallable, DisplayName = "Can Go Inside", Category = "Main|Getters", BlueprintPure)
+	FORCEINLINE bool CanGoInside() { return bInside; };
 	UFUNCTION(BlueprintCallable, DisplayName = "Reallocate SpaceObjects Positions On Orbit", Category = "Main|Functions")
 	void DiscoverStar();
 
