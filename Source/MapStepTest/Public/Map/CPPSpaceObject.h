@@ -112,11 +112,11 @@ public:
 	void RemoveObjectFromOrbit(ACPPOrbitalObject* ObjectToRemove);
 	UFUNCTION(BlueprintCallable, DisplayName = "Can Go Inside", Category = "Main|Getters", BlueprintPure)
 	FORCEINLINE bool CanGoInside() { return bInside; };
-	UFUNCTION(BlueprintCallable, DisplayName = "Reallocate SpaceObjects Positions On Orbit", Category = "Main|Functions")
+	UFUNCTION(BlueprintCallable, DisplayName = "Discover Star", Category = "Main|Functions")
 	void DiscoverStar();
 
 	UFUNCTION()
-		void OnStarClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+	void OnStarClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
 protected:
 	virtual void BeginPlay() override;
